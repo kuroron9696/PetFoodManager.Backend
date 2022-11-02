@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  petfoodmanager.backend.api:
+    image: ${DOCKER_REGISTRY-}petfoodmanagerbackend
+    build:
+      context: .
+      dockerfile: PetFoodManager.Backend.Api/Dockerfile
