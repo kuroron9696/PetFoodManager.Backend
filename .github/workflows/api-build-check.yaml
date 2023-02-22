@@ -22,4 +22,4 @@ jobs:
       - name: Install dependencies
         run: dotnet restore "PetFoodManager.Backend.Api/PetFoodManager.Backend.Api.csproj"
       - name: Build
-        run: dotnet build "PetFoodManager.Backend.Api.csproj" -c Release
+        run: dotnet build "PetFoodManager.Backend.Api/PetFoodManager.Backend.Api.csproj" -c Release
