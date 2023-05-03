@@ -16,7 +16,7 @@ public static class Program
 
         var review = await CreateReviewAsync(args[0], args[1]);
         Console.WriteLine($"::set-output name=reviewComment::{review}");
-        File.WriteAllText("review.env", $"REVIEW_COMMENT={review}");
+        File.WriteAllText("review.env", $"\"{review}\"");
     }
 
     private static async Task<string> CreateReviewAsync(string headBranchName, string baseBranchName)
