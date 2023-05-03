@@ -30,7 +30,7 @@ public static class Program
         }).Build();
 
         var chatCompletionService = kernel.GetService<IChatCompletion>();
-        var systemPrompt = $"Provide some feedback and suggestions for improvement to source codes from user. If you use code blocks, absolutely escape the backquotes so that they can be exchanged in shell scripts. Answer in Japanese.";
+        var systemPrompt = $"Provide some feedback and suggestions for improvement to source codes from user. Answer in Japanese.";
 
         using (var repo = new Repository(repoPath))
         {
