@@ -30,7 +30,8 @@ public static class Program
 
         var chatCompletionService = kernel.GetService<IChatCompletion>();
 
-        var systemPrompt = "Provide some feedback and suggestions for improvement to source codes from user. Answer in Japanese.";
+        var maxTokens = 1024;
+        var systemPrompt = $"Provide some feedback and suggestions for improvement to source codes from user. Answer in Japanese. Answers must be contained in {maxToken - 100} tokens.";
 
         using (var repo = new Repository(repoPath))
         {
@@ -55,7 +56,7 @@ public static class Program
                     var chat = chatCompletionService.CreateNewChat();
                     chat.AddMessage(AuthorRoles.System, systemPrompt);
                     chat.AddMessage(AuthorRoles.User, content);
-                    var response = await chatCompletionService.GenerateMessageAsync(chat, new ChatRequestSettings { MaxTokens = 1024 });
+                    var response = await chatCompletionService.GenerateMessageAsync(chat, new ChatRequestSettings { MaxTokens = maxTokens });
                     responses.Add(response);
                 }
             }
