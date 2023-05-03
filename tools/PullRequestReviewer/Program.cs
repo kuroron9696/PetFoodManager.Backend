@@ -16,7 +16,6 @@ public static class Program
         Console.WriteLine($"Base branch name: {args[1]}");
 
         var review = await CreateReviewAsync(args[0], args[1]);
-        Console.WriteLine($"::set-output name=reviewComment::{review}");
         File.WriteAllText("review.env", $"{review}");
     }
 
