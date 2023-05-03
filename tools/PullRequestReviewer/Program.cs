@@ -8,9 +8,17 @@ public static class Program
         if (args.Length != 1)
             throw new ArgumentException("引数が無効です");
 
+        Console.WriteLine($"Branch name: {args[0]}");
         var repoPath = Repository.Discover(Path.GetFullPath(Directory.GetCurrentDirectory()));
         using (var repo = new Repository(repoPath))
         {
+            foreach (var branch in repo.Branches)
+                Console.WriteLine(branch.ToString());
+            if (repo.Branches[args[0]] == null)
+            {
+                Console.WriteLine($"Branch {args[0]} not found.");
+                return;
+            }
             var baseCommit = repo.Branches[args[0]].Tip;
             var latestCommit = repo.Head.Tip;
 
