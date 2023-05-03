@@ -2,11 +2,15 @@
 using LibGit2Sharp;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
-using Microsoft.SemanticKernel.Connectors.AI.OpenAI.Tokenizers;
 using static Microsoft.SemanticKernel.AI.ChatCompletion.ChatHistory;
 
 public static class Program
 {
+    /// <summary>
+    /// コードの差分からレビューを作成しファイルに保存する
+    /// </summary>
+    /// <param name="args"></param>
+    /// <returns></returns>
     public static async Task Main(string[] args)
     {
         if (args.Length != 2)
@@ -19,6 +23,12 @@ public static class Program
         File.WriteAllText("review.env", $"{review}");
     }
 
+    /// <summary>
+    /// レビューを作成する
+    /// </summary>
+    /// <param name="headBranchName"></param>
+    /// <param name="baseBranchName"></param>
+    /// <returns></returns>
     private static async Task<string> CreateReviewAsync(string headBranchName, string baseBranchName)
     {
         var repoPath = Repository.Discover(Path.GetFullPath(Directory.GetCurrentDirectory()));
@@ -54,7 +64,7 @@ public static class Program
                     var chat = chatCompletionService.CreateNewChat();
                     chat.AddMessage(AuthorRoles.System, systemPrompt);
                     chat.AddMessage(AuthorRoles.User, content);
-                    var response = await chatCompletionService.GenerateMessageAsync(chat, new ChatRequestSettings { MaxTokens = 2048 });
+                    var response = await chatCompletionService.GenerateMessageAsync(chat, new ChatRequestSettings { MaxTokens = 4096 });
                     responses.Add(response);
                 }
             }
