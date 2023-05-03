@@ -30,10 +30,7 @@ public static class Program
         }).Build();
 
         var chatCompletionService = kernel.GetService<IChatCompletion>();
-
-        var maxTokens = 2048;
-        var systemPrompt = $"Provide some feedback and suggestions for improvement to source codes from user. Answer in Japanese. Answers must be contained in {nameof(maxTokens)} tokens.";
-        systemPrompt = systemPrompt.Replace(nameof(maxTokens), (maxTokens - GPT3Tokenizer.Encode(systemPrompt).Count).ToString());
+        var systemPrompt = $"Provide some feedback and suggestions for improvement to source codes from user. If you use code blocks, absolutely escape the backquotes so that they can be exchanged in shell scripts. Answer in Japanese.";
 
         using (var repo = new Repository(repoPath))
         {
@@ -58,7 +55,7 @@ public static class Program
                     var chat = chatCompletionService.CreateNewChat();
                     chat.AddMessage(AuthorRoles.System, systemPrompt);
                     chat.AddMessage(AuthorRoles.User, content);
-                    var response = await chatCompletionService.GenerateMessageAsync(chat, new ChatRequestSettings { MaxTokens = maxTokens });
+                    var response = await chatCompletionService.GenerateMessageAsync(chat, new ChatRequestSettings { MaxTokens = 2048 });
                     responses.Add(response);
                 }
             }
