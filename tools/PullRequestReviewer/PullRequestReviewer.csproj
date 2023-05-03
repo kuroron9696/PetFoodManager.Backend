@@ -10,7 +10,6 @@
   <ItemGroup>
     <PackageReference Include="LibGit2Sharp" Version="0.27.2" />
     <PackageReference Include="Microsoft.SemanticKernel" Version="0.13.277.1-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.OpenAI" Version="0.13.277.1-preview" />
   </ItemGroup>
 
 </Project>
