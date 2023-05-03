@@ -1,12 +1,11 @@
 ﻿using System.Text.RegularExpressions;
 using LibGit2Sharp;
 
-class Program
+public class Program
 {
-    static void Main()
+    public static void Main()
     {
-        var projectRoot = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), ".."));
-        var repoPath = Repository.Discover(projectRoot);
+        var repoPath = Repository.Discover(Path.GetFullPath(Directory.GetCurrentDirectory()));
         using (var repo = new Repository(repoPath))
         {
             var baseCommit = repo.Branches["origin/develop"].Tip;
@@ -14,22 +13,23 @@ class Program
 
             var diff = repo.Diff.Compare<TreeChanges>(baseCommit.Tree, latestCommit.Tree);
 
-            var addedFiles = diff.Where(e => e.Status == ChangeKind.Added).Select(e => e.Path);
+            var addedFiles = diff.Where(e => e.Status == ChangeKind.Added || e.Status == ChangeKind.Modified).Select(e => e.Path).ToList();
 
-            var addedCSharpFiles = addedFiles.Where(e => e.EndsWith(".cs"));
+            var addedCSharpFiles = addedFiles.Where(e => e.EndsWith(".cs")).ToList();
 
             var addedClasses = new List<string>();
 
             var addedInterfaces = new List<string>();
 
-            var classPattern = new Regex(@"¥bclass¥s+(¥w+)");
-            var interfacePattern = new Regex(@"¥binterface¥s+(¥w+)");
+            var classPattern = new Regex(@"\bclass\s+(\w+)");
+            var interfacePattern = new Regex(@"\binterface\s+(\w+)");
 
             foreach (var file in addedCSharpFiles)
             {
                 var content = File.ReadAllText(file);
+                Console.WriteLine(content);
                 addedClasses.AddRange(classPattern.Matches(content).Select(e => e.Groups[1].Value));
-                addedInterfaces.AddRange(classPattern.Matches(content).Select(e => e.Groups[1].Value));
+                addedInterfaces.AddRange(interfacePattern.Matches(content).Select(e => e.Groups[1].Value));
             }
 
             Console.WriteLine("Added classes:");
