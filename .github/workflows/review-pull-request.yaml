@@ -25,7 +25,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       - name: Load output from environment file
         run: |
-          review_comment="$(cat review.env | xargs)"
+          review_comment=$(cat review.env | xargs)
           echo "REVIEW_COMMENT='$review_comment'" >> $GITHUB_ENV
       - name: Post review comment
         run: |
