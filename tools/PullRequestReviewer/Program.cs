@@ -15,7 +15,7 @@ public static class Program
         Console.WriteLine($"Base branch name: {args[1]}");
 
         var review = await CreateReviewAsync(args[0], args[1]);
-        Console.WriteLine(review);
+        Console.WriteLine($"::set-output name=reviewComment::{review}");
     }
 
     private static async Task<string> CreateReviewAsync(string headBranchName, string baseBranchName)
@@ -54,7 +54,7 @@ public static class Program
                     var chat = chatCompletionService.CreateNewChat();
                     chat.AddMessage(AuthorRoles.System, systemPrompt);
                     chat.AddMessage(AuthorRoles.User, content);
-                    var response = await chatCompletionService.GenerateMessageAsync(chat, new ChatRequestSettings { });
+                    var response = await chatCompletionService.GenerateMessageAsync(chat, new ChatRequestSettings { MaxTokens = 256 });
                     responses.Add(response);
                 }
             }
