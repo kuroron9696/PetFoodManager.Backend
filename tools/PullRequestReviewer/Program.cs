@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using Internal;
 using LibGit2Sharp;
 
 public static class Program
