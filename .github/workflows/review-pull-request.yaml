@@ -23,3 +23,15 @@ jobs:
         run: dotnet run --project ./tools/PullRequestReviewer "refs/heads/${{ github.head_ref }}" "refs/remotes/origin/${{ github.base_ref }}"
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      - name: Load output from environment file
+        run: echo "REVIEW_COMMENT=$(cat review.env | xargs)" >> $GITHUB_ENV
+      - name: Post review comment
+        run: |
+          comment=${{ env.REVIEW_COMMENT }}
+          pr_number=$(echo ${{ github.event.pull_request.number }} | xargs)
+          comment_url="${{ github.event.pull_request.comments_url }}"
+          auth_header="Authorization: token ${{ secrets.GH_TOKEN }}"
+          content_type_header="Content-Type: application/json"
+          payload=$(echo '{ "body": "'"${comment//\"/\\\"}"'" }' | jq -c .)
+          curl -X POST -H "${auth_header}" -H "${content_type_header}" --data "${payload}" "${comment_url}"
+        if: ${{ github.event_name == 'pull_request' }}
