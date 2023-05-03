@@ -64,7 +64,7 @@ public static class Program
                     var chat = chatCompletionService.CreateNewChat();
                     chat.AddMessage(AuthorRoles.System, systemPrompt);
                     chat.AddMessage(AuthorRoles.User, content);
-                    var response = await chatCompletionService.GenerateMessageAsync(chat, new ChatRequestSettings { MaxTokens = 4096 });
+                    var response = await chatCompletionService.GenerateMessageAsync(chat, new ChatRequestSettings { MaxTokens = 4000 });
                     responses.Add(response);
                 }
             }
