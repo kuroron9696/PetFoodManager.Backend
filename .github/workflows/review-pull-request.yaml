@@ -9,13 +9,15 @@ jobs:
   detect-added-classes-and-interfaces:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout HEAD branch
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.base_ref }}
+          ref: ${{ github.head_ref }}
+      - name: Fetch base branch
+        run: git fetch origin ${{ github.base_ref }}
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '6.x'
       - name: Run script
-        run: dotnet run --project ./tools/PullRequestReviewer "refs/remotes/origin/${{ github.base_ref }}"
+        run: dotnet run --project ./tools/PullRequestReviewer "refs/heads/${{ github.head_ref }}" "refs/remotes/origin/${{ github.base_ref }}"

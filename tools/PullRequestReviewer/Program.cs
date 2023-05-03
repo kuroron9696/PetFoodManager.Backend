@@ -5,10 +5,11 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        if (args.Length != 1)
+        if (args.Length != 2)
             throw new ArgumentException("引数が無効です");
 
-        Console.WriteLine($"Branch name: {args[0]}");
+        Console.WriteLine($"HEAD branch name: {args[0]}");
+        Console.WriteLine($"Base branch name: {args[1]}");
         var repoPath = Repository.Discover(Path.GetFullPath(Directory.GetCurrentDirectory()));
         using (var repo = new Repository(repoPath))
         {
@@ -22,8 +23,15 @@ public static class Program
                 Console.WriteLine($"Branch {args[0]} not found.");
                 return;
             }
-            var baseCommit = repo.Branches[args[0]].Tip;
-            var latestCommit = repo.Head.Tip;
+
+            if (repo.Branches[args[1]] == null)
+            {
+                Console.WriteLine($"Branch {args[0]} not found.");
+                return;
+            }
+
+            var latestCommit = repo.Branches[args[0]].Tip;
+            var baseCommit = repo.Branches[args[1]].Tip;
 
             var diff = repo.Diff.Compare<TreeChanges>(baseCommit.Tree, latestCommit.Tree);
 
