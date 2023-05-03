@@ -11,7 +11,7 @@ public static class Program
         var repoPath = Repository.Discover(Path.GetFullPath(Directory.GetCurrentDirectory()));
         using (var repo = new Repository(repoPath))
         {
-            var baseCommit = repo.Branches[args[0]].Tip;
+            var baseCommit = repo.Branches[$"origin/{args[0]}"].Tip;
             var latestCommit = repo.Head.Tip;
 
             var diff = repo.Diff.Compare<TreeChanges>(baseCommit.Tree, latestCommit.Tree);

@@ -16,4 +16,4 @@ jobs:
         with:
           dotnet-version: '6.x'
       - name: Run script
-        run: dotnet run --project ./tools/PullRequestReviewer "${{ github.head_ref }}"
+        run: dotnet run --project ./tools/PullRequestReviewer "${{ github.base_ref }}"
