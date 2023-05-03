@@ -19,5 +19,17 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '6.x'
-      - name: Run script
+      - name: Run review script
         run: dotnet run --project ./tools/PullRequestReviewer "refs/heads/${{ github.head_ref }}" "refs/remotes/origin/${{ github.base_ref }}"
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      - name: Post review comment
+        run: |
+          comment="$(jq -Rs . review.env | sed -e 's/^"//' -e 's/"$//')"
+          pr_number=$(echo ${{ github.event.pull_request.number }} | xargs)
+          comment_url="${{ github.event.pull_request.comments_url }}"
+          auth_header="Authorization: token ${{ secrets.GITHUB_TOKEN }}"
+          content_type_header="Content-Type: application/json"
+          payload=$(echo '{ "body": "'"${comment//\"/\\\"}"'" }' | jq -c .)
+          curl -X POST -H "${auth_header}" -H "${content_type_header}" --data "${payload}" "${comment_url}"
+        if: ${{ github.event_name == 'pull_request' }}
