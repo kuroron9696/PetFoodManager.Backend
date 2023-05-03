@@ -2,6 +2,7 @@
 using LibGit2Sharp;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
+using Microsoft.SemanticKernel.Connectors.AI.OpenAI.Tokenizers;
 using static Microsoft.SemanticKernel.AI.ChatCompletion.ChatHistory;
 
 public static class Program
@@ -30,8 +31,9 @@ public static class Program
 
         var chatCompletionService = kernel.GetService<IChatCompletion>();
 
-        var maxTokens = 1024;
-        var systemPrompt = $"Provide some feedback and suggestions for improvement to source codes from user. Answer in Japanese. Answers must be contained in {maxTokens - 100} tokens.";
+        var maxTokens = 2048;
+        var systemPrompt = $"Provide some feedback and suggestions for improvement to source codes from user. Answer in Japanese. Answers must be contained in {nameof(maxTokens)} tokens.";
+        systemPrompt = systemPrompt.Replace(nameof(maxTokens), (maxTokens - GPT3Tokenizer.Encode(systemPrompt).Count).ToString());
 
         using (var repo = new Repository(repoPath))
         {
