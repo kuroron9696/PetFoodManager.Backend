@@ -13,7 +13,10 @@ public static class Program
         using (var repo = new Repository(repoPath))
         {
             foreach (var branch in repo.Branches)
+            {
                 Console.WriteLine(branch.ToString());
+            }
+
             if (repo.Branches[args[0]] == null)
             {
                 Console.WriteLine($"Branch {args[0]} not found.");
