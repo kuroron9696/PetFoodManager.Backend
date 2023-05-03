@@ -6,7 +6,7 @@ on:
       - "develop"
 
 jobs:
-  detect-added-classes-and-interfaces:
+  review-pull-request:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout HEAD branch
