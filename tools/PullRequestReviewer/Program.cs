@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Internal;
 using LibGit2Sharp;
 
 public static class Program
@@ -13,23 +14,6 @@ public static class Program
         var repoPath = Repository.Discover(Path.GetFullPath(Directory.GetCurrentDirectory()));
         using (var repo = new Repository(repoPath))
         {
-            foreach (var branch in repo.Branches)
-            {
-                Console.WriteLine(branch.ToString());
-            }
-
-            if (repo.Branches[args[0]] == null)
-            {
-                Console.WriteLine($"Branch {args[0]} not found.");
-                return;
-            }
-
-            if (repo.Branches[args[1]] == null)
-            {
-                Console.WriteLine($"Branch {args[0]} not found.");
-                return;
-            }
-
             var latestCommit = repo.Branches[args[0]].Tip;
             var baseCommit = repo.Branches[args[1]].Tip;
 
@@ -48,8 +32,9 @@ public static class Program
                 if (Regex.IsMatch(content, classPattern) || Regex.IsMatch(content, interfacePattern))
                 {
                     Console.WriteLine(file);
-                    Console.WriteLine(content);
                     Console.WriteLine("---");
+                    Console.WriteLine(content);
+                    Console.WriteLine("###");
                 }
             }
         }
