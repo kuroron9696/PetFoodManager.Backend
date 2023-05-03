@@ -21,3 +21,5 @@ jobs:
           dotnet-version: '6.x'
       - name: Run script
         run: dotnet run --project ./tools/PullRequestReviewer "refs/heads/${{ github.head_ref }}" "refs/remotes/origin/${{ github.base_ref }}"
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
