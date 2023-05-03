@@ -27,7 +27,7 @@ jobs:
         run: echo "REVIEW_COMMENT=$(cat review.env | xargs)" >> $GITHUB_ENV
       - name: Post review comment
         run: |
-          comment=${{ env.REVIEW_COMMENT }}
+          comment="${{ env.REVIEW_COMMENT }}"
           pr_number=$(echo ${{ github.event.pull_request.number }} | xargs)
           comment_url="${{ github.event.pull_request.comments_url }}"
           auth_header="Authorization: token ${{ secrets.GITHUB_TOKEN }}"
