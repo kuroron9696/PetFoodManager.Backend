@@ -30,7 +30,7 @@ jobs:
           comment=${{ env.REVIEW_COMMENT }}
           pr_number=$(echo ${{ github.event.pull_request.number }} | xargs)
           comment_url="${{ github.event.pull_request.comments_url }}"
-          auth_header="Authorization: token ${{ secrets.GH_TOKEN }}"
+          auth_header="Authorization: token ${{ secrets.GITHUB_TOKEN }}"
           content_type_header="Content-Type: application/json"
           payload=$(echo '{ "body": "'"${comment//\"/\\\"}"'" }' | jq -c .)
           curl -X POST -H "${auth_header}" -H "${content_type_header}" --data "${payload}" "${comment_url}"
