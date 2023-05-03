@@ -31,7 +31,7 @@ public static class Program
         var chatCompletionService = kernel.GetService<IChatCompletion>();
 
         var maxTokens = 1024;
-        var systemPrompt = $"Provide some feedback and suggestions for improvement to source codes from user. Answer in Japanese. Answers must be contained in {maxToken - 100} tokens.";
+        var systemPrompt = $"Provide some feedback and suggestions for improvement to source codes from user. Answer in Japanese. Answers must be contained in {maxTokens - 100} tokens.";
 
         using (var repo = new Repository(repoPath))
         {
