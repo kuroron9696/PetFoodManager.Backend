@@ -89,7 +89,7 @@ public static class Program
 
                 Console.WriteLine($"# {changedFilePath}");
                 Console.WriteLine("Now Reviewing...");
-                var response = await chatCompletionService.GenerateMessageAsync(chat, new ChatRequestSettings { MaxTokens = 1000 });
+                var response = await chatCompletionService.GenerateMessageAsync(chat, new ChatRequestSettings { MaxTokens = 800 });
                 Console.WriteLine("Done!");
                 responses.Add(response);
             }
