@@ -45,7 +45,7 @@ jobs:
         continueOnError: true
         displayName: "Post review comments"
         inputs:
-          gitHubConnection: "${{ GITHUB_CONNECTION_NAME }}"
+          gitHubConnection: "$(GITHUB_CONNECTION_NAME)"
           repositoryName: "$(Build.Repository.Name)"
           id: "$(Build.PullRequset.PullRequestNumber)"
           comment: |
