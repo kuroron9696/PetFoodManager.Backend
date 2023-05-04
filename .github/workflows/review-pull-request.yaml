@@ -25,7 +25,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       - name: Post review comment
         run: |
-          comment="$(jq -Rs . <(sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' comments.txt))"
+          comment="$(jq -Rs . comments.txt)"
           pr_number=$(echo ${{ github.event.pull_request.number }} | xargs)
           comment_url="${{ github.event.pull_request.comments_url }}"
           auth_header="Authorization: token ${{ secrets.GITHUB_TOKEN }}"
