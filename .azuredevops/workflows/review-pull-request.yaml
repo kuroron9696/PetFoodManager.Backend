@@ -49,4 +49,4 @@ jobs:
           repositoryName: "$(Build.Repository.Name)"
           id: "$(Build.PullRequset.PullRequestNumber)"
           comment: |
-            $(jq -r '.ReviewComments' result.json)
+            $(jq -r '.Comments' result.json)

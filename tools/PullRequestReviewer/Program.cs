@@ -13,11 +13,11 @@ public class Result
     /// レビューのコメント
     /// </summary>
     /// <value></value>
-    public string ReviewComments { get; set; }
+    public string Comments { get; set; }
 }
 
 /// <summary>
-/// メインプログラム
+/// 変更が加わったコードをGPTに投げてレビューしてもらうツール
 /// </summary>
 public static class Program
 {
@@ -38,7 +38,7 @@ public static class Program
 
         var reviewComments = await CreateReviewCommentsAsync(args[0], args[1]);
         Console.WriteLine($"# Result\n---\n{reviewComments}");
-        File.WriteAllText("result.json", JsonSerializer.Serialize(new Result { ReviewComments = reviewComments }, new JsonSerializerOptions { WriteIndented = true }));
+        File.WriteAllText("result.json", JsonSerializer.Serialize(new Result { Comments = reviewComments }, new JsonSerializerOptions { WriteIndented = true }));
     }
 
     /// <summary>

@@ -14,6 +14,10 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PullRequestReviewer", "tools\PullRequestReviewer\PullRequestReviewer.csproj", "{02653D6C-18EE-411E-B9CA-38687A2E1885}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{AE816E33-A470-4688-8F59-BF016CB2B700}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentPoster", "tools\CommentPoster\CommentPoster.csproj", "{52FCF995-62D3-46F6-B45A-E3771ED92933}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +36,10 @@ Global
 		{02653D6C-18EE-411E-B9CA-38687A2E1885}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02653D6C-18EE-411E-B9CA-38687A2E1885}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02653D6C-18EE-411E-B9CA-38687A2E1885}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52FCF995-62D3-46F6-B45A-E3771ED92933}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52FCF995-62D3-46F6-B45A-E3771ED92933}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52FCF995-62D3-46F6-B45A-E3771ED92933}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52FCF995-62D3-46F6-B45A-E3771ED92933}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,5 +67,9 @@ Global
 		$0.TextStylePolicy = $6
 		$6.inheritsSet = null
 		$6.scope = text/x-web
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{52FCF995-62D3-46F6-B45A-E3771ED92933} = {AE816E33-A470-4688-8F59-BF016CB2B700}
+		{02653D6C-18EE-411E-B9CA-38687A2E1885} = {AE816E33-A470-4688-8F59-BF016CB2B700}
 	EndGlobalSection
 EndGlobal

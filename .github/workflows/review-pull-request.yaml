@@ -25,11 +25,9 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       - name: Post review comment
         run: |
-          comment=$(python -c "import json; f = open('result.json', 'r'); data = json.load(f); f.close(); print(data['ReviewComments'].replace('\u000D', ' '))")
-          pr_number=$(echo ${{ github.event.pull_request.number }} | xargs)
-          comment_url="${{ github.event.pull_request.comments_url }}"
-          auth_header="Authorization: token ${{ secrets.GITHUB_TOKEN }}"
-          content_type_header="Content-Type: application/json"
-          payload=$(echo '{ "body": "'"${comment//\"/\\\"}"'" }' | jq -c .)
-          curl -X POST -H "${auth_header}" -H "${content_type_header}" --data "${payload}" "${comment_url}"
+          repository_id=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/$GITHUB_REPOSITORY | jq '.id')
+          pull_request_id=$(jq --raw-output .number "$GITHUB_EVENT_PATH")
+          dotnet run --project ./tools/CommentPoster "result.json" "${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}" $repository_id $pull_request_id
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: ${{ github.event_name == 'pull_request' }}
