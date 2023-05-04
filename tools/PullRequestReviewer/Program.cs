@@ -20,7 +20,7 @@ public static class Program
         Console.WriteLine($"Base branch name: {args[1]}");
 
         var review = await CreateReviewAsync(args[0], args[1]);
-        File.WriteAllText("review.env", $"{review}");
+        File.WriteAllText("comments.txt", $"{review}");
     }
 
     /// <summary>
@@ -39,12 +39,7 @@ public static class Program
         }).Build();
 
         var chatCompletionService = kernel.GetService<IChatCompletion>();
-        var systemPrompt = $"Provide some feedback and suggestions for improvement to source codes from user.\nAnswer in Japanese.\n"
-                            + "The format of the output should be as follows:"
-                            + "---\n"
-                            + "{Name of Review Subject}\n"
-                            + "---\n"
-                            + "{Review Comment}\n";
+        var systemPrompt = File.ReadAllText("tools/PullRequestReviewer/prompt.txt");
 
         using (var repo = new Repository(repoPath))
         {
@@ -68,13 +63,16 @@ public static class Program
                 {
                     var chat = chatCompletionService.CreateNewChat();
                     chat.AddMessage(AuthorRoles.System, systemPrompt);
-                    chat.AddMessage(AuthorRoles.User, content);
+                    chat.AddMessage(AuthorRoles.User, $"# {file}\n{content}");
+                    Console.WriteLine($"# {file}");
+                    Console.WriteLine("Now Reviewing...");
                     var response = await chatCompletionService.GenerateMessageAsync(chat, new ChatRequestSettings { MaxTokens = 3000 });
+                    Console.WriteLine("Done!");
                     responses.Add(response);
                 }
             }
 
-            return string.Join("\n", responses);
+            return string.Join("\n\n", responses);
         }
     }
 }
