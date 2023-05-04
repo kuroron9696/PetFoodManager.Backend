@@ -25,7 +25,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       - name: Post review comment
         run: |
-          comment=$(jq -r '.ReviewComments' result.json)
+          comment=$(python -c "import json; with open('comments.json', 'r') as f: data = json.load(f); print(data['ReviewComments'].replace('\u000A', ' ').replace('\u000D', ' '))")
           pr_number=$(echo ${{ github.event.pull_request.number }} | xargs)
           comment_url="${{ github.event.pull_request.comments_url }}"
           auth_header="Authorization: token ${{ secrets.GITHUB_TOKEN }}"
