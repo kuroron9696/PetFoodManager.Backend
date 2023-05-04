@@ -1,0 +1,52 @@
+trigger:
+  branches:
+    exclude:
+      - "*"
+
+pr:
+  branches:
+    include:
+      - "develop"
+
+variables:
+  - group: SHARE
+
+jobs:
+  - job: ReviewPullRequest
+    displayName: "Review Pull Request"
+    pool:
+      vmImage: "ubuntu-latest"
+    steps:
+      - checkout: self
+        displayName: "Checkout HEAD branch"
+        fetchDepth: 0
+
+      - script: |
+          git fetch origin $(System.PullRequest.TargetBranch)
+        displayName: "Fetch base branch"
+
+      - task: UseDotNet@2
+        displayName: "Setup .NET"
+        inputs:
+          packageType: "sdk"
+          version: "6.x"
+
+      - script: |
+          dotnet run --project ./tools/PullRequestReviewer "refs/remotes/origin/$(System.PullRequest.TargetBranch)" "refs/heads/$(Build.SourceBranchName)"
+        displayName: "Run review script"
+        env:
+          OPENAI_API_KEY: $(OPENAI_API_KEY)
+
+      - script: |
+          sudo apt-get install -y jq
+        displayName: "Install jq"
+
+      - task: GitHubComment@0
+        continueOnError: true
+        displayName: "Post review comments"
+        inputs:
+          gitHubConnection: "$(GITHUB_CONNECTION_NAME)"
+          repositoryName: "$(Build.Repository.Name)"
+          id: "$(Build.PullRequset.PullRequestNumber)"
+          comment: |
+            $(jq -r '.Comments' result.json)
