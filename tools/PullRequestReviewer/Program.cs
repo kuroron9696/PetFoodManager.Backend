@@ -1,8 +1,24 @@
-﻿using LibGit2Sharp;
+﻿using System.Text.Json;
+using LibGit2Sharp;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
 using static Microsoft.SemanticKernel.AI.ChatCompletion.ChatHistory;
 
+/// <summary>
+/// 処理の結果
+/// </summary>
+public class Result
+{
+    /// <summary>
+    /// レビューのコメント
+    /// </summary>
+    /// <value></value>
+    public string ReviewComments { get; set; }
+}
+
+/// <summary>
+/// メインプログラム
+/// </summary>
 public static class Program
 {
     /// <summary>
@@ -20,9 +36,9 @@ public static class Program
         Console.WriteLine($"Base branch name: {args[0]}");
         Console.WriteLine($"HEAD branch name: {args[1]}");
 
-        var review = await CreateReviewAsync(args[0], args[1]);
-        Console.WriteLine(review);
-        File.WriteAllText("comments.txt", $"{review}");
+        var reviewComments = await CreateReviewCommentsAsync(args[0], args[1]);
+        Console.WriteLine($"# Result\n---\n{reviewComments}");
+        File.WriteAllText("result.json", JsonSerializer.Serialize(new Result { ReviewComments = reviewComments }, new JsonSerializerOptions { WriteIndented = true }));
     }
 
     /// <summary>
@@ -31,7 +47,7 @@ public static class Program
     /// <param name="baseBranchName"></param>
     /// <param name="headBranchName"></param>
     /// <returns></returns>
-    private static async Task<string> CreateReviewAsync(string baseBranchName, string headBranchName)
+    private static async Task<string> CreateReviewCommentsAsync(string baseBranchName, string headBranchName)
     {
         var kernel = new KernelBuilder().Configure(c =>
         {
@@ -75,7 +91,6 @@ public static class Program
                 Console.WriteLine("Now Reviewing...");
                 var response = await chatCompletionService.GenerateMessageAsync(chat, new ChatRequestSettings { MaxTokens = 1000 });
                 Console.WriteLine("Done!");
-                Console.WriteLine(response);
                 responses.Add(response);
             }
 
