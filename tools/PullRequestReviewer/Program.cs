@@ -20,6 +20,7 @@ public static class Program
         Console.WriteLine($"Base branch name: {args[1]}");
 
         var review = await CreateReviewAsync(args[0], args[1]);
+        Console.WriteLine(review);
         File.WriteAllText("comments.txt", $"{review}");
     }
 
