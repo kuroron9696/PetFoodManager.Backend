@@ -39,7 +39,12 @@ public static class Program
         }).Build();
 
         var chatCompletionService = kernel.GetService<IChatCompletion>();
-        var systemPrompt = $"Provide some feedback and suggestions for improvement to source codes from user. Answer in Japanese.";
+        var systemPrompt = $"Provide some feedback and suggestions for improvement to source codes from user.\nAnswer in Japanese.\n"
+                            + "The format of the output should be as follows:"
+                            + "---\n"
+                            + "{Name of Review Subject}\n"
+                            + "---\n"
+                            + "{Review Comment}\n";
 
         using (var repo = new Repository(repoPath))
         {
