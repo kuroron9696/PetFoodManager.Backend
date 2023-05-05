@@ -8,12 +8,6 @@ pr:
     include:
       - "develop"
 
-resources:
-  repositories:
-    - repository: self
-      type: git
-      ref: refs/heads/$(System.PullRequest.SourceBranch)
-
 variables:
   - group: SHARE
 
@@ -29,7 +23,8 @@ jobs:
 
       - script: |
           git fetch origin $(System.PullRequest.TargetBranch)
-        displayName: "Fetch base branch"
+          git fetch origin $(System.PullRequest.SourceBranch)
+        displayName: "Fetch base and source branch"
 
       - task: UseDotNet@2
         displayName: "Setup .NET"
@@ -38,7 +33,7 @@ jobs:
           version: "6.x"
 
       - script: |
-          dotnet run --project ./tools/PullRequestReviewer "refs/remotes/origin/$(System.PullRequest.TargetBranch)" "refs/heads/$(System.PullRequest.SourceBranch)"
+          dotnet run --project ./tools/PullRequestReviewer "refs/remotes/origin/$(System.PullRequest.TargetBranch)" "refs/remotes/origin/$(System.PullRequest.SourceBranch)"
         displayName: "Run review script"
         env:
           OPENAI_API_KEY: $(OPENAI_API_KEY)
