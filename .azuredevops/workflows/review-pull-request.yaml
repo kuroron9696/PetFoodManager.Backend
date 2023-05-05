@@ -53,6 +53,4 @@ jobs:
           gitHubConnection: "$(GITHUB_CONNECTION_NAME)"
           repositoryName: "$(Build.Repository.Name)"
           comment: |
-            ```
             $(review.result)
-            ```
