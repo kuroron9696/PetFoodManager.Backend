@@ -20,7 +20,7 @@ jobs:
       - checkout: self
         displayName: "Checkout HEAD branch"
         fetchDepth: 0
-        refs: refs/heads/$(System.PullRequest.SourceBranch)
+        ref: refs/heads/$(System.PullRequest.SourceBranch)
 
       - script: |
           git fetch origin $(System.PullRequest.TargetBranch)
