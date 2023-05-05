@@ -4,6 +4,7 @@ using LibGit2Sharp;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
+using PetFoodManager.Backend.Common.Dtos;
 using static Microsoft.SemanticKernel.AI.ChatCompletion.ChatHistory;
 
 namespace PetFoodManager.Backend.Tools.PullRequestReviewer

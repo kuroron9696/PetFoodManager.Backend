@@ -14,5 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PullRequestReviewer\PullRequestReviewer.csproj" />
+    <ProjectReference Include="..\..\PetFoodManager.Backend.Common\PetFoodManager.Backend.Common.csproj" />
   </ItemGroup>
 </Project>

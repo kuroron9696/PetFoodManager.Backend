@@ -19,4 +19,7 @@
 		<Folder Include="Domains\" />
 		<Folder Include="Domains\Dtos\" />
 	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\PetFoodManager.Backend.Common\PetFoodManager.Backend.Common.csproj" />
+	</ItemGroup>
 </Project>

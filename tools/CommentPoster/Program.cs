@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using Octokit;
-using PetFoodManager.Backend.Tools.PullRequestReviewer;
+using PetFoodManager.Backend.Common.Dtos;
 
 namespace PetFoodManager.Backend.Tools.CommentPoster
 {
