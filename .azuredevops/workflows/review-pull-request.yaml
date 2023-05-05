@@ -44,7 +44,7 @@ jobs:
 
       - script: |
           result=$(jq -r '.Comments' result.json)
-          escaped_result=$(printf '%s' "$COMMENTS" | awk '{gsub(/\r?\n/,"%0A")}1')
+          escaped_result=$(echo "$result" | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/%0A/g')
           echo "##vso[task.setvariable variable=review.result]$escaped_result"
 
       - task: GitHubComment@0
