@@ -47,5 +47,6 @@ jobs:
         inputs:
           gitHubConnection: "$(GITHUB_CONNECTION_NAME)"
           repositoryName: "$(Build.Repository.Name)"
-          comment: |
-            $(jq -r '.Comments' result.json)
+          comment: '${COMMENTS}'
+          env:
+            COMMENTS: $(jq -r '.Comments' result.json)
