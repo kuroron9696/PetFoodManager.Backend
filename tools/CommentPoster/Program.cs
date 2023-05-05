@@ -56,7 +56,7 @@ namespace PetFoodManager.Backend.Tools.CommentPoster
         private static async Task PostCommentAsync(string filePath, long repositoryId, int pullRequestId)
         {
             var json = File.ReadAllText(filePath);
-            var result = JsonSerializer.Deserialize<Result>(json);
+            var result = JsonSerializer.Deserialize<Result>(json, new JsonSerializerOptions(JsonSerializerDefaults.Web));
             await s_githubClient.Issue.Comment.Create(repositoryId, pullRequestId, result.Comment);
         }
     }

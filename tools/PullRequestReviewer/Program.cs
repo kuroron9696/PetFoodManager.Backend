@@ -145,7 +145,7 @@ namespace PetFoodManager.Backend.Tools.PullRequestReviewer
                 });
 
                 await Task.WhenAll(tasks);
-                File.WriteAllText("result.json", JsonSerializer.Serialize(new Result { Comment = string.Join("\n\n", reviewComments) }, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, WriteIndented = true }));
+                File.WriteAllText("result.json", JsonSerializer.Serialize(new Result { Comment = string.Join("\n\n", reviewComments) }, new JsonSerializerOptions(JsonSerializerDefaults.Web)));
             }
         }
     }
