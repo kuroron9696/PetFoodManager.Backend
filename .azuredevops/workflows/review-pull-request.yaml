@@ -44,12 +44,14 @@ jobs:
 
       - script: |
           result=$(jq -r '.Comments' result.json)
-          escaped_result=$(echo "$COMMENTS" | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/%0A/g')
-          echo '##vso[task.setvariable variable=review.result]'$escaped_result;
+          echo '##vso[task.setvariable variable=review.result]'$result;
 
       - task: GitHubComment@0
         displayName: "Post review comments"
         inputs:
           gitHubConnection: "$(GITHUB_CONNECTION_NAME)"
           repositoryName: "$(Build.Repository.Name)"
-          comment: $(review.result)
+          comment: |
+            ```
+            $(review.result)
+            ```
