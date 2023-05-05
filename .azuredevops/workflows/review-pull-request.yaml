@@ -34,6 +34,7 @@ jobs:
 
       - script: |
           echo '{"Comments": "テスト"}' > result.json
+          repository_id=$(curl -s -H "Authorization: token $(GITHUB_TOKEN)" https://api.github.com/repos/$(Build.Repository.Name) | jq '.id')
           dotnet run --project ./tools/CommentPoster "result.json" "$(Build.Repository.Name)" "$(Build.Repository.ID)" "$(System.PullRequest.PullRequestId)"
         env:
           GITHUB_TOKEN: $(System.AccessToken)
