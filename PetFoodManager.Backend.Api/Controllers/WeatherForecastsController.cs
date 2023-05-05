@@ -3,6 +3,9 @@ using PetFoodManager.Backend.Api.Domains.Dtos;
 
 namespace PetFoodManager.Backend.Api.Controllers;
 
+/// <summary>
+/// サンプルプログラム
+/// </summary>
 [ApiController]
 [Route("[controller]")]
 public class WeatherForecastsController : ControllerBase
@@ -14,11 +17,19 @@ public class WeatherForecastsController : ControllerBase
 
     private readonly ILogger<WeatherForecastsController> _logger;
 
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
+    /// <param name="logger"></param>
     public WeatherForecastsController(ILogger<WeatherForecastsController> logger)
     {
         _logger = logger;
     }
 
+    /// <summary>
+    /// 取得する
+    /// </summary>
+    /// <returns></returns>
     [HttpGet(Name = "GetWeatherForecast")]
     public IEnumerable<WeatherForecast> Get()
     {

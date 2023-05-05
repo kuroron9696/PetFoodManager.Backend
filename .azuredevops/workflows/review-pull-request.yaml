@@ -18,12 +18,13 @@ jobs:
       vmImage: "ubuntu-latest"
     steps:
       - checkout: self
-        displayName: "Checkout HEAD branch"
+        displayName: "Checkout"
         fetchDepth: 0
 
       - script: |
           git fetch origin $(System.PullRequest.TargetBranch)
-        displayName: "Fetch base branch"
+          git fetch origin $(System.PullRequest.SourceBranch)
+        displayName: "Fetch base and source branch"
 
       - task: UseDotNet@2
         displayName: "Setup .NET"
@@ -32,7 +33,7 @@ jobs:
           version: "6.x"
 
       - script: |
-          dotnet run --project ./tools/PullRequestReviewer "refs/remotes/origin/$(System.PullRequest.TargetBranch)" "refs/heads/$(Build.SourceBranchName)"
+          dotnet run --project ./tools/PullRequestReviewer "refs/remotes/origin/$(System.PullRequest.TargetBranch)" "refs/remotes/origin/$(System.PullRequest.SourceBranch)"
         displayName: "Run review script"
         env:
           OPENAI_API_KEY: $(OPENAI_API_KEY)
@@ -41,12 +42,16 @@ jobs:
           sudo apt-get install -y jq
         displayName: "Install jq"
 
+      - script: |
+          result=$(jq -r '.Comments' result.json)
+          escaped_result=$(echo "$result" | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/%0A/g')
+          echo "##vso[task.setvariable variable=review.result]$escaped_result"
+        displayName: "Format review comments"
+
       - task: GitHubComment@0
-        continueOnError: true
         displayName: "Post review comments"
         inputs:
           gitHubConnection: "$(GITHUB_CONNECTION_NAME)"
           repositoryName: "$(Build.Repository.Name)"
-          id: "$(Build.PullRequset.PullRequestNumber)"
           comment: |
-            $(jq -r '.Comments' result.json)
+            $(review.result)
