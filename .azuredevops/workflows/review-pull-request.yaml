@@ -33,15 +33,6 @@ jobs:
           version: "6.x"
 
       - script: |
-          echo '{"Comments": "テスト"}' > result.json
-          curl -s -H "Authorization: token $(System.AccessToken)" https://api.github.com/repos/$(Build.Repository.Name)
-          repository_id=$(curl -s -H "Authorization: token $(System.AccessToken)" https://api.github.com/repos/$(Build.Repository.Name) | jq '.id')
-          echo "$repository_id"
-          dotnet run --project ./tools/CommentPoster "result.json" "$(Build.Repository.Name)" "$repository_id" "$(System.PullRequest.PullRequestId)"
-        env:
-          GITHUB_TOKEN: $(System.AccessToken)
-
-      - script: |
           dotnet run --project ./tools/PullRequestReviewer "refs/remotes/origin/$(System.PullRequest.TargetBranch)" "refs/remotes/origin/$(System.PullRequest.SourceBranch)"
         displayName: "Run review script"
         env:
