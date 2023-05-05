@@ -32,7 +32,7 @@ jobs:
           version: "6.x"
 
       - script: |
-          dotnet run --project ./tools/PullRequestReviewer "refs/remotes/origin/$(System.PullRequest.TargetBranch)" "$(Build.SourceBranchName)"
+          dotnet run --project ./tools/PullRequestReviewer "refs/remotes/origin/$(System.PullRequest.TargetBranch)" "$(System.PullRequest.SourceBranch)"
         displayName: "Run review script"
         env:
           OPENAI_API_KEY: $(OPENAI_API_KEY)
