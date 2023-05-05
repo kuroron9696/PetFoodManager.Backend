@@ -8,6 +8,12 @@ pr:
     include:
       - "develop"
 
+resources:
+  repositories:
+    - repository: self
+      type: git
+      ref: refs/heads/$(System.PullRequest.SourceBranch)
+
 variables:
   - group: SHARE
 
@@ -20,7 +26,6 @@ jobs:
       - checkout: self
         displayName: "Checkout HEAD branch"
         fetchDepth: 0
-        ref: refs/heads/$(System.PullRequest.SourceBranch)
 
       - script: |
           git fetch origin $(System.PullRequest.TargetBranch)
