@@ -44,7 +44,8 @@ jobs:
 
       - script: |
           result=$(jq -r '.Comments' result.json)
-          echo '##vso[task.setvariable variable=review.result]'$result;
+          escaped_result=$(echo "$COMMENTS" | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/%0A/g')
+          echo '##vso[task.setvariable variable=review.result]'$escaped_result;
 
       - task: GitHubComment@0
         displayName: "Post review comments"
