@@ -12,49 +12,49 @@ namespace PullRequestReviewer
     /// </summary>
     public class Program
     {
-        private static readonly ILogger<Program> _logger;
-        private static readonly IKernel _kernel;
-        private static readonly IChatCompletion _chatCompletionService;
-        private static readonly int _maxTokens;
-        private static readonly string _serviceId = "ChatCompletionService";
+        private static readonly ILogger<Program> s_logger;
+        private static readonly IKernel s_kernel;
+        private static readonly IChatCompletion s_chatCompletionService;
+        private static readonly int s_maxTokens;
+        private static readonly string s_serviceId = "ChatCompletionService";
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
         static Program()
         {
-            bool.TryParse(Environment.GetEnvironmentVariable("USE_AZURE_OPENAI"), out var useAzureOpenAI);
             var apiKey = Environment.GetEnvironmentVariable("API_KEY");
             var modelName = Environment.GetEnvironmentVariable("MODEL_NAME");
             var baseUrl = Environment.GetEnvironmentVariable("BASE_URL");
-            var maxTokensExists = int.TryParse(Environment.GetEnvironmentVariable("MAX_TOKENS"), out _maxTokens);
+            var maxTokensExists = int.TryParse(Environment.GetEnvironmentVariable("MAX_TOKENS"), out s_maxTokens);
+            var useAzureOpenAIExists = bool.TryParse(Environment.GetEnvironmentVariable("USE_AZURE_OPENAI"), out var useAzureOpenAI);
+
+            if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(modelName) || !maxTokensExists || !useAzureOpenAIExists)
+                throw new InvalidOperationException("環境変数が不足しています。");
 
             if (useAzureOpenAI && string.IsNullOrEmpty(baseUrl))
                 throw new InvalidOperationException("Azure OpenAIを使用する場合はBASE_URLが必要です。");
 
-            if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(modelName) || !maxTokensExists)
-                throw new InvalidOperationException("環境変数が不足しています。");
-
-            _kernel = new KernelBuilder().Configure(c =>
+            s_kernel = new KernelBuilder().Configure(c =>
             {
                 if (useAzureOpenAI)
                 {
-                    c.AddAzureChatCompletionService(_serviceId, modelName, baseUrl, apiKey);
+                    c.AddAzureChatCompletionService(s_serviceId, modelName, baseUrl, apiKey);
                 }
                 else
                 {
-                    c.AddOpenAIChatCompletionService(_serviceId, modelName, apiKey);
+                    c.AddOpenAIChatCompletionService(s_serviceId, modelName, apiKey);
                 }
             }).Build();
-            _chatCompletionService = _kernel.GetService<IChatCompletion>();
-            _logger = LoggerFactory.Create(builder =>
+            s_chatCompletionService = s_kernel.GetService<IChatCompletion>();
+            s_logger = LoggerFactory.Create(builder =>
             {
                 builder.AddConsole();
             }).CreateLogger<Program>();
         }
 
         /// <summary>
-        /// コードの差分からレビューを作成しファイルに保存する
+        /// メイン処理
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
@@ -65,8 +65,8 @@ namespace PullRequestReviewer
                 throw new ArgumentException("引数が無効です。2つの引数が必要です: BaseBranchName, SourceBranchName");
             }
 
-            _logger.LogInformation($"Base branch name: {args[0]}");
-            _logger.LogInformation($"Source branch name: {args[1]}");
+            s_logger.LogInformation($"Base branch name: {args[0]}");
+            s_logger.LogInformation($"Source branch name: {args[1]}");
 
             await CreateReviewCommentsAsync(args[0], args[1]);
         }
@@ -108,14 +108,18 @@ namespace PullRequestReviewer
 
                     // GPTへリクエスト
                     var message = $"# Name\n{changedFilePath}\n" + $"# Content\n{content}\n" + $"# Diff\n{patchContent}";
-                    var chat = _chatCompletionService.CreateNewChat();
+
+                    var chat = s_chatCompletionService.CreateNewChat();
                     chat.AddMessage(AuthorRoles.System, systemPrompt);
                     chat.AddMessage(AuthorRoles.User, message);
 
-                    _logger.LogInformation($"# {changedFilePath}");
-                    _logger.LogInformation("Now Reviewing...");
-                    var reviewComment = await _chatCompletionService.GenerateMessageAsync(chat, new ChatRequestSettings { MaxTokens = _maxTokens });
-                    _logger.LogInformation("Done!");
+                    s_logger.LogInformation($"# {changedFilePath}");
+                    s_logger.LogInformation("Now Reviewing...");
+
+                    var reviewComment = await s_chatCompletionService.GenerateMessageAsync(chat, new ChatRequestSettings { MaxTokens = s_maxTokens });
+
+                    s_logger.LogInformation("Done!");
+
                     reviewComments.Add(reviewComment);
                 }
 
