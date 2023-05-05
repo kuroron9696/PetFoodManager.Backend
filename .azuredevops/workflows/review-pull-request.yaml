@@ -33,6 +33,12 @@ jobs:
           version: "6.x"
 
       - script: |
+          echo '{"Comments": "テスト"}' > result.json
+          dotnet run --project ./tools/CommentPoster "result.json" "$(Build.Repository.Name)" "$(Build.Repository.ID)" "$(System.PullRequest.PullRequestId)"
+        env:
+          GITHUB_TOKEN: $(System.AccessToken)
+
+      - script: |
           dotnet run --project ./tools/PullRequestReviewer "refs/remotes/origin/$(System.PullRequest.TargetBranch)" "refs/remotes/origin/$(System.PullRequest.SourceBranch)"
         displayName: "Run review script"
         env:
