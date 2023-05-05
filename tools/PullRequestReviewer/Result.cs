@@ -1,4 +1,4 @@
-namespace PullRequestReviewer
+namespace PetFoodManager.Backend.Tools.PullRequestReviewer
 {
     /// <summary>
     /// 処理の結果

@@ -6,7 +6,7 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
 using static Microsoft.SemanticKernel.AI.ChatCompletion.ChatHistory;
 
-namespace PullRequestReviewer
+namespace PetFoodManager.Backend.Tools.PullRequestReviewer
 {
     /// <summary>
     /// 変更が加わったコードをGPTに投げてレビューしてもらうツール
@@ -27,9 +27,9 @@ namespace PullRequestReviewer
         {
             var apiKey = Environment.GetEnvironmentVariable("API_KEY");
             var modelName = Environment.GetEnvironmentVariable("MODEL_NAME");
-            var baseUrl = Environment.GetEnvironmentVariable("BASE_URL");
             var maxTokensExists = int.TryParse(Environment.GetEnvironmentVariable("MAX_TOKENS"), out s_maxTokens);
             var useAzureExists = bool.TryParse(Environment.GetEnvironmentVariable("USE_AZURE"), out var useAzure);
+            var baseUrl = Environment.GetEnvironmentVariable("BASE_URL");
 
             if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(modelName) || !maxTokensExists || !useAzureExists)
                 throw new InvalidOperationException("環境変数が不足しています。");
@@ -71,7 +71,7 @@ namespace PullRequestReviewer
 
             s_logger.LogInformation($"Base branch name: {args[0]} / Source branch name: {args[1]}");
 
-            await CreateReviewCommentsAsync(args[0], args[1]);
+            await CreateReviewCommentAsync(args[0], args[1]);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace PullRequestReviewer
         /// <param name="baseBranchName"></param>
         /// <param name="sourceBranchName"></param>
         /// <returns></returns>
-        private static async Task CreateReviewCommentsAsync(string baseBranchName, string sourceBranchName)
+        private static async Task CreateReviewCommentAsync(string baseBranchName, string sourceBranchName)
         {
             // レビュー用プロンプトを取得
             var systemPrompt = File.ReadAllText("tools/PullRequestReviewer/prompt.txt");

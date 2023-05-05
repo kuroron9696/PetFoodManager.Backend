@@ -1,40 +1,63 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
+﻿using System.Text.Json;
 using Octokit;
+using PetFoodManager.Backend.Tools.PullRequestReviewer;
 
-/// <summary>
-/// GitHubのプルリクエストにコメントを投稿するツール
-/// </summary>
-public static class Program
+namespace PetFoodManager.Backend.Tools.CommentPoster
 {
     /// <summary>
-    /// メイン処理
+    /// GitHubのプルリクエストにコメントを投稿するツール
     /// </summary>
-    /// <param name="args"></param>
-    /// <returns></returns>
-    public static async Task Main(string[] args)
+    public class Program
     {
-        if (args.Length != 4)
+        private static readonly GitHubClient s_githubClient;
+
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        static Program()
         {
-            throw new ArgumentException("引数が無効です。4つの引数が必要です: filePath, productName, repositoryId, prId");
+            var token = Environment.GetEnvironmentVariable("GITHUB_TOKEN");
+
+            if (string.IsNullOrEmpty(token))
+                throw new InvalidOperationException("環境変数が不足しています。");
+
+            s_githubClient = new GitHubClient(new ProductHeaderValue(nameof(PetFoodManager.Backend)))
+            {
+                Credentials = new Credentials(token)
+            };
         }
 
-        var filePath = args[0];
-        var productName = args[1];
-        var repositoryId = long.Parse(args[2]);
-        var prId = int.Parse(args[3]);
-
-        var githubToken = Environment.GetEnvironmentVariable("GITHUB_TOKEN");
-        var githubClient = new GitHubClient(new ProductHeaderValue(productName))
+        /// <summary>
+        /// メイン処理
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public static async Task Main(string[] args)
         {
-            Credentials = new Credentials(githubToken)
-        };
+            if (args.Length != 3)
+            {
+                throw new ArgumentException("引数が無効です。3つの引数が必要です: filePath, repositoryId, pullRequestId");
+            }
 
-        var json = File.ReadAllText(filePath);
-        var data = JObject.Parse(json);
+            var filePath = args[0];
+            var repositoryId = long.Parse(args[1]);
+            var pullRequestId = int.Parse(args[2]);
 
-        await githubClient.Issue.Comment.Create(repositoryId, prId, data["Comments"].ToString());
+            await PostCommentAsync(filePath, repositoryId, pullRequestId);
+        }
+
+        /// <summary>
+        /// コメントを投稿する
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="repositoryId"></param>
+        /// <param name="pullRequestId"></param>
+        /// <returns></returns>
+        private static async Task PostCommentAsync(string filePath, long repositoryId, int pullRequestId)
+        {
+            var json = File.ReadAllText(filePath);
+            var result = JsonSerializer.Deserialize<Result>(json);
+            await s_githubClient.Issue.Comment.Create(repositoryId, pullRequestId, result.Comment);
+        }
     }
 }

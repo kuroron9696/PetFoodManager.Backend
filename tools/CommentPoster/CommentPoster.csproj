@@ -12,4 +12,7 @@
     <PackageReference Include="Octokit" Version="5.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PullRequestReviewer\PullRequestReviewer.csproj" />
+  </ItemGroup>
 </Project>
