@@ -18,7 +18,7 @@ jobs:
       vmImage: "ubuntu-latest"
     steps:
       - checkout: self
-        displayName: "Checkout HEAD branch"
+        displayName: "Checkout"
         fetchDepth: 0
 
       - script: |
