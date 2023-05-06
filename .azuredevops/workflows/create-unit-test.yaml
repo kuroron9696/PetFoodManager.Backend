@@ -12,8 +12,8 @@ variables:
   - group: SHARE
 
 jobs:
-  - job: ReviewPullRequest
-    displayName: "Review Pull Request"
+  - job: CreateUnitTest
+    displayName: "Create Unit Test"
     pool:
       vmImage: "ubuntu-latest"
     steps:
