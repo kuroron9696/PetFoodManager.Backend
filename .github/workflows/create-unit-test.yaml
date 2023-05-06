@@ -1,4 +1,4 @@
-name: Review Pull Request
+name: Create Unit Test
 
 on:
   pull_request:
