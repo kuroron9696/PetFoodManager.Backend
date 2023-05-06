@@ -1,7 +1,8 @@
-﻿using System;
-
-namespace PetFoodManager.Backend.Api.Domains.Dtos
+﻿namespace PetFoodManager.Backend.Api.Domains.Dtos
 {
+    /// <summary>
+    /// 天気
+    /// </summary>
     public class WeatherForecast
     {
         public DateTime Date { get; set; }
