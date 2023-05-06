@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PetFoodManager.Backend.Api.Domains.Dtos;
+using PetFoodManager.Backend.Api.Usecases;
 using PetFoodManager.Backend.Common.Cores.Attributes;
 
 namespace PetFoodManager.Backend.Api.Controllers;
@@ -12,36 +13,22 @@ namespace PetFoodManager.Backend.Api.Controllers;
 [UnitTestSubject]
 public class WeatherForecastsController : ControllerBase
 {
-    private static readonly string[] Summaries = new[]
-    {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
-
-    private readonly ILogger<WeatherForecastsController> _logger;
+    private readonly IReadWeatherForecastsUsecase _readWeatherForecastsUsecase;
 
     /// <summary>
     /// コンストラクタ
     /// </summary>
-    /// <param name="logger"></param>
-    public WeatherForecastsController(ILogger<WeatherForecastsController> logger)
+    /// <param name="readWeatherForecastsUsecase"></param>
+    public WeatherForecastsController(IReadWeatherForecastsUsecase readWeatherForecastsUsecase)
     {
-        _logger = logger;
+        _readWeatherForecastsUsecase = readWeatherForecastsUsecase;
     }
 
     /// <summary>
     /// 取得する
     /// </summary>
     /// <returns></returns>
-    [HttpGet(Name = "GetWeatherForecast")]
-    public IEnumerable<WeatherForecast> Get()
-    {
-        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        {
-            Date = DateTime.Now.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        })
-        .ToArray();
-    }
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<WeatherForecast>>> GetAsync()
+        => Ok(await _readWeatherForecastsUsecase.ExecuteAsync());
 }
-
