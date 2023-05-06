@@ -57,7 +57,8 @@ namespace PetFoodManager.Backend.Tools.CommentPoster
         {
             var json = File.ReadAllText(filePath);
             var result = JsonSerializer.Deserialize<Result>(json, new JsonSerializerOptions(JsonSerializerDefaults.Web));
-            await s_githubClient.Issue.Comment.Create(repositoryId, pullRequestId, result.Comment);
+            if (result != null)
+                await s_githubClient.Issue.Comment.Create(repositoryId, pullRequestId, result.Comment);
         }
     }
 }
