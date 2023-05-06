@@ -92,7 +92,7 @@ namespace PetFoodManager.Backend.Tools.UnitTestCreator
         /// <returns></returns>
         private static async Task CreateUnitTestAsync(string baseBranchName, string sourceBranchName)
         {
-            // レビュー用プロンプトを取得
+            // テスト作成用プロンプトを取得
             var systemPrompt = File.ReadAllText("tools/UnitTestCreator/prompt.txt");
 
             // リポジトリのパスを取得
