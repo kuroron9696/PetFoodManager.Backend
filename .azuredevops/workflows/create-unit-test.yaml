@@ -1,0 +1,61 @@
+trigger:
+  branches:
+    exclude:
+      - "*"
+
+pr:
+  branches:
+    include:
+      - "develop"
+
+variables:
+  - group: SHARE
+
+jobs:
+  - job: ReviewPullRequest
+    displayName: "Review Pull Request"
+    pool:
+      vmImage: "ubuntu-latest"
+    steps:
+      - checkout: self
+        displayName: "Checkout"
+        fetchDepth: 0
+
+      - script: |
+          git fetch origin $(System.PullRequest.TargetBranch)
+          git fetch origin $(System.PullRequest.SourceBranch)
+        displayName: "Fetch base and source branch"
+
+      - task: UseDotNet@2
+        displayName: "Setup .NET"
+        inputs:
+          packageType: "sdk"
+          version: "6.x"
+
+      - script: |
+          dotnet run --project ./tools/UnitTestCreator "refs/remotes/origin/$(System.PullRequest.TargetBranch)" "refs/remotes/origin/$(System.PullRequest.SourceBranch)"
+        displayName: "Run test creation script"
+        env:
+          API_KEY: $(API_KEY)
+          MODEL_NAME: $(MODEL_NAME)
+          MAX_TOKENS: $(MAX_TOKENS)
+          USE_AZURE: $(USE_AZURE)
+          BASE_URL: $(BASE_URL)
+
+      - script: |
+          sudo apt-get install -y jq
+        displayName: "Install jq"
+
+      - script: |
+          result=$(jq -r '.comment' result.json)
+          escaped_result=$(echo "$result" | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/%0A/g')
+          echo "##vso[task.setvariable variable=test.result]$escaped_result"
+        displayName: "Format test codes as comments"
+
+      - task: GitHubComment@0
+        displayName: "Post comments"
+        inputs:
+          gitHubConnection: "$(GITHUB_CONNECTION_NAME)"
+          repositoryName: "$(Build.Repository.Name)"
+          comment: |
+            $(test.result)
