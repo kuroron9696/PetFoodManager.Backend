@@ -1,11 +1,15 @@
 ﻿using System.Collections.Concurrent;
 using System.Text.Json;
 using LibGit2Sharp;
+using Microsoft.Build.Locator;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
+using PetFoodManager.Backend.Common.Cores.Attributes;
 using PetFoodManager.Backend.Common.Dtos;
 using static Microsoft.SemanticKernel.AI.ChatCompletion.ChatHistory;
 
@@ -20,6 +24,7 @@ namespace PetFoodManager.Backend.Tools.UnitTestCreator
         private static readonly Random s_random;
         private static readonly IKernel s_kernel;
         private static readonly IChatCompletion s_chatCompletionService;
+        private static readonly MSBuildWorkspace s_workSpace;
         private static readonly int s_maxTokens;
         private static readonly string s_serviceId = "ChatCompletionService";
 
@@ -58,6 +63,8 @@ namespace PetFoodManager.Backend.Tools.UnitTestCreator
             s_chatCompletionService = s_kernel.GetService<IChatCompletion>();
             var seed = Environment.TickCount;
             s_random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref seed))).Value;
+            MSBuildLocator.RegisterDefaults();
+            s_workSpace = MSBuildWorkspace.Create();
         }
 
         /// <summary>
@@ -90,6 +97,7 @@ namespace PetFoodManager.Backend.Tools.UnitTestCreator
 
             // リポジトリのパスを取得
             var repoPath = Repository.Discover(Path.GetFullPath(Directory.GetCurrentDirectory()));
+            var solution = await s_workSpace.OpenSolutionAsync(Path.Combine(Path.GetFullPath(Directory.GetCurrentDirectory()), "PetFoodManager.Backend.sln")).ConfigureAwait(false);
 
             // Gitリポジトリを操作して、指定されたブランチ間の差分を取得
             using (var repo = new Repository(repoPath))
@@ -115,10 +123,40 @@ namespace PetFoodManager.Backend.Tools.UnitTestCreator
                         // ユニットテストの対象かどうか判別
                         var syntaxTree = CSharpSyntaxTree.ParseText(content);
                         var rootNode = syntaxTree.GetRoot();
-                        var isSubject = rootNode.DescendantNodes().OfType<AttributeSyntax>().Any(e => e.Name.ToString().Contains(nameof(UnitTestCreator)));
+                        var isSubject = rootNode.DescendantNodes().OfType<AttributeSyntax>().Any(e => e.Name.ToString().Contains(nameof(UnitTestSubject)));
 
                         if (isSubject)
                         {
+                            var project = solution.Projects.FirstOrDefault(e => changedFilePath.Contains(e.Name));
+                            var document = project.Documents.FirstOrDefault(e => e.FilePath.Contains(changedFilePath));
+                            var semanticModel = await document.GetSemanticModelAsync();
+
+                            // 対象ファイルが参照しているクラスとインターフェースを取得
+                            var referenceSymbols = semanticModel.SyntaxTree.GetRoot().DescendantNodes()
+                                .Select(n => semanticModel.GetSymbolInfo(n).Symbol)
+                                .Where(s => s != null && s.Kind == SymbolKind.NamedType)
+                                .OfType<INamedTypeSymbol>()
+                                .Where(nt => nt.TypeKind == TypeKind.Class || nt.TypeKind == TypeKind.Interface)
+                                .Distinct()
+                                .ToList();
+
+                            var relatedFileContents = string.Empty;
+
+                            // 参照しているクラスとインターフェースの中身を取得
+                            foreach (var referenceSymbol in referenceSymbols)
+                            {
+                                var referenceSyntaxReference = referenceSymbol.DeclaringSyntaxReferences.FirstOrDefault();
+                                if (referenceSyntaxReference != null)
+                                {
+                                    var path = referenceSyntaxReference.SyntaxTree.FilePath;
+                                    if (!path.Contains(changedFilePath))
+                                    {
+                                        relatedFileContents += File.ReadAllText(referenceSyntaxReference.SyntaxTree.FilePath);
+                                        relatedFileContents += "\n---\n";
+                                    }
+                                }
+                            }
+
                             // APIのレートリミット対策
                             var waitingSeconds = s_random.Next(0, 180);
                             s_logger.LogInformation($"Wait for {waitingSeconds} seconds to avoid rate limits. / Subject: {changedFilePath}");
@@ -126,13 +164,8 @@ namespace PetFoodManager.Backend.Tools.UnitTestCreator
 
                             s_logger.LogInformation($"Now Creating... / Subject: {changedFilePath}");
 
-                            // 差分取得
-                            var patch = repo.Diff.Compare<Patch>(baseCommit.Tree, latestCommit.Tree, new List<string> { changedFilePath });
-                            var patchContent = patch.Content;
-
                             // GPTへリクエスト
-                            var message = $"# Name\n{changedFilePath}\n" + $"# Content\n{content}\n" + $"# Related Files\n{content}\n";
-
+                            var message = $"# Name\n{changedFilePath}\n" + $"# Content\n{content}\n" + $"# Related Files\n{relatedFileContents}\n";
                             var chat = s_chatCompletionService.CreateNewChat();
                             chat.AddMessage(AuthorRoles.System, systemPrompt);
                             chat.AddMessage(AuthorRoles.User, message);

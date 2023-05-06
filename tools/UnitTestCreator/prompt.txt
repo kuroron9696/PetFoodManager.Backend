@@ -4,6 +4,7 @@ Please create a unit test based on the following prerequisites.
 # Assumptions
 - Input from the user is passed in the form of "# Input Format".
 - Please strictly adhere to the constraints described in "# Constraints".
+- Generate test codes according to the format described in "# Output Format".
 
 # Input Format
 ````
@@ -24,3 +25,9 @@ Please create a unit test based on the following prerequisites.
 - Test case details must be described in the form of "Normal: {Details}" or "Abnormal: {Details}".
 - Test cases for normal and abnormal systems must be implemented.
 - Comments in the code must be written in Japanese.
+
+# Output Format
+```
+## {name of file}
+{test codes}
+```
