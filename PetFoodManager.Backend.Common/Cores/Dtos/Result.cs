@@ -1,4 +1,4 @@
-namespace PetFoodManager.Backend.Tools.PullRequestReviewer
+namespace PetFoodManager.Backend.Common.Dtos
 {
     /// <summary>
     /// 処理の結果
@@ -6,7 +6,7 @@ namespace PetFoodManager.Backend.Tools.PullRequestReviewer
     public class Result
     {
         /// <summary>
-        /// レビューのコメント
+        /// プルリクエストへ投稿するコメント
         /// </summary>
         /// <value></value>
         public string Comment { get; set; }

@@ -1,0 +1,37 @@
+name: Create Unit Test
+
+on:
+  pull_request:
+    branches:
+      - "develop"
+
+jobs:
+  create-unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout HEAD branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Fetch base branch
+        run: git fetch origin ${{ github.base_ref }}
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.x'
+      - name: Run test creation script
+        run: dotnet run --project ./tools/UnitTestCreator "refs/remotes/origin/${{ github.base_ref }}" "refs/heads/${{ github.head_ref }}"
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          MODEL_NAME: ${{ secrets.MODEL_NAME }}
+          MAX_TOKENS: ${{ secrets.MAX_TOKENS }}
+          USE_AZURE: ${{ secrets.USE_AZURE }}
+          BASE_URL: ${{ secrets.BASE_URL }}
+      - name: Post test code
+        run: |
+          repository_id=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/$GITHUB_REPOSITORY | jq '.id')
+          pull_request_id=$(jq --raw-output .number "$GITHUB_EVENT_PATH")
+          dotnet run --project ./tools/CommentPoster "result.json" $repository_id $pull_request_id
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ github.event_name == 'pull_request' }}

@@ -13,4 +13,8 @@
     <PackageReference Include="Microsoft.SemanticKernel" Version="0.13.277.1-preview" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\PetFoodManager.Backend.Common\PetFoodManager.Backend.Common.csproj" />
+  </ItemGroup>
+
 </Project>

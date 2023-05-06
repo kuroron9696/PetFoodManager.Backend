@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PetFoodManager.Backend.Api.Domains.Dtos;
+using PetFoodManager.Backend.Common.Cores.Attributes;
 
 namespace PetFoodManager.Backend.Api.Controllers;
 
@@ -8,6 +9,7 @@ namespace PetFoodManager.Backend.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("[controller]")]
+[UnitTestSubject]
 public class WeatherForecastsController : ControllerBase
 {
     private static readonly string[] Summaries = new[]
