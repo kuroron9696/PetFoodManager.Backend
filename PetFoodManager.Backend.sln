@@ -1,28 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 25.0.1703.6
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetFoodManager.Backend.Api", "PetFoodManager.Backend.Api\PetFoodManager.Backend.Api.csproj", "{3F2B956F-0CE8-4FEF-8EE5-103D245FBE81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetFoodManager.Backend.Api", "PetFoodManager.Backend.Api\PetFoodManager.Backend.Api.csproj", "{3F2B956F-0CE8-4FEF-8EE5-103D245FBE81}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E87AC5C9-C9FE-4CC8-9245-AD0BEFA3E6B8}"
 	ProjectSection(SolutionItems) = preProject
 		appsettings.json = appsettings.json
 	EndProjectSection
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{1D199D81-BE36-4F44-9071-3444CF2A0166}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PullRequestReviewer", "tools\PullRequestReviewer\PullRequestReviewer.csproj", "{02653D6C-18EE-411E-B9CA-38687A2E1885}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PullRequestReviewer", "tools\PullRequestReviewer\PullRequestReviewer.csproj", "{02653D6C-18EE-411E-B9CA-38687A2E1885}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{AE816E33-A470-4688-8F59-BF016CB2B700}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentPoster", "tools\CommentPoster\CommentPoster.csproj", "{52FCF995-62D3-46F6-B45A-E3771ED92933}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommentPoster", "tools\CommentPoster\CommentPoster.csproj", "{52FCF995-62D3-46F6-B45A-E3771ED92933}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetFoodManager.Backend.Common", "PetFoodManager.Backend.Common\PetFoodManager.Backend.Common.csproj", "{966571CB-BABD-4700-BA53-A4109DE1370D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetFoodManager.Backend.Common", "PetFoodManager.Backend.Common\PetFoodManager.Backend.Common.csproj", "{966571CB-BABD-4700-BA53-A4109DE1370D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestCreator", "tools\UnitTestCreator\UnitTestCreator.csproj", "{A1E8352E-BE4B-4B48-9237-B9849A353598}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestCreator", "tools\UnitTestCreator\UnitTestCreator.csproj", "{A1E8352E-BE4B-4B48-9237-B9849A353598}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecificationsCreator", "tools\SpecificationsCreator\SpecificationsCreator.csproj", "{6D736E74-D45B-409C-86D4-C16CECE3CC96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpecificationsCreator", "tools\SpecificationsCreator\SpecificationsCreator.csproj", "{6D736E74-D45B-409C-86D4-C16CECE3CC96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,10 +32,6 @@ Global
 		{3F2B956F-0CE8-4FEF-8EE5-103D245FBE81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F2B956F-0CE8-4FEF-8EE5-103D245FBE81}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F2B956F-0CE8-4FEF-8EE5-103D245FBE81}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1D199D81-BE36-4F44-9071-3444CF2A0166}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1D199D81-BE36-4F44-9071-3444CF2A0166}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1D199D81-BE36-4F44-9071-3444CF2A0166}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1D199D81-BE36-4F44-9071-3444CF2A0166}.Release|Any CPU.Build.0 = Release|Any CPU
 		{02653D6C-18EE-411E-B9CA-38687A2E1885}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{02653D6C-18EE-411E-B9CA-38687A2E1885}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02653D6C-18EE-411E-B9CA-38687A2E1885}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -62,6 +56,12 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{02653D6C-18EE-411E-B9CA-38687A2E1885} = {AE816E33-A470-4688-8F59-BF016CB2B700}
+		{52FCF995-62D3-46F6-B45A-E3771ED92933} = {AE816E33-A470-4688-8F59-BF016CB2B700}
+		{A1E8352E-BE4B-4B48-9237-B9849A353598} = {AE816E33-A470-4688-8F59-BF016CB2B700}
+		{6D736E74-D45B-409C-86D4-C16CECE3CC96} = {AE816E33-A470-4688-8F59-BF016CB2B700}
+	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2E490ADA-B64C-4D69-8ABD-66B5BBA17CD8}
 	EndGlobalSection
@@ -69,27 +69,18 @@ Global
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = PrefixedHierarchical
-		$0.TextStylePolicy = $2
+		$0.TextStylePolicy = $6
 		$2.FileWidth = 80
 		$2.TabsToSpaces = True
 		$2.scope = text/x-csharp
 		$0.CSharpFormattingPolicy = $3
 		$3.scope = text/x-csharp
-		$0.TextStylePolicy = $4
 		$4.FileWidth = 80
 		$4.TabsToSpaces = True
 		$4.scope = text/plain
-		$0.TextStylePolicy = $5
 		$5.inheritsSet = null
 		$5.scope = text/x-json
-		$0.TextStylePolicy = $6
 		$6.inheritsSet = null
 		$6.scope = text/x-web
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{52FCF995-62D3-46F6-B45A-E3771ED92933} = {AE816E33-A470-4688-8F59-BF016CB2B700}
-		{02653D6C-18EE-411E-B9CA-38687A2E1885} = {AE816E33-A470-4688-8F59-BF016CB2B700}
-		{A1E8352E-BE4B-4B48-9237-B9849A353598} = {AE816E33-A470-4688-8F59-BF016CB2B700}
-		{6D736E74-D45B-409C-86D4-C16CECE3CC96} = {AE816E33-A470-4688-8F59-BF016CB2B700}
 	EndGlobalSection
 EndGlobal
